@@ -148,7 +148,7 @@ function updateView(html) {
   if (container) {
     container.innerHTML = html;
   } else {
-    console.log("There's no container...");
+    console.error("There's no container...");
   }
 }
 
@@ -183,7 +183,7 @@ function newsDetail() {
     }
   }
 
-  updateView(template.replace("{{__commit__}}", makeComment(newsContent.comments)));
+  updateView(template.replace("{{__comments__}}", makeComment(newsContent.comments)));
 }
 
 function makeComment(comments) {

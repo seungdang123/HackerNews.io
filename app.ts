@@ -61,7 +61,7 @@ function updateView(html: string): void {
   if (container) {
     container.innerHTML = html;
   } else {
-    console.log("There's no container...");
+    console.error("There's no container...");
   }
 }
 
@@ -141,11 +141,10 @@ function newsFeed(): void {
         : store.currentPage
     )
   );
-
   updateView(template);
 }
 
-function newsDetail() {
+function newsDetail(): void {
   const id = location.hash.substr(7);
   const newsContent = getData<NewsDetail>(CONTENT_URL.replace("@id", id));
   let template = `
@@ -185,7 +184,7 @@ function newsDetail() {
   }
 
   updateView(
-    template.replace("{{__commit__}}", makeComment(newsContent.comments))
+    template.replace("{{__comments__}}", makeComment(newsContent.comments))
   );
 }
 
@@ -212,7 +211,7 @@ function makeComment(comments: NewsComment[]): string {
   return commentString.join("");
 }
 
-function router() {
+function router(): void {
   const routePath = location.hash;
 
   if (routePath === "") {
