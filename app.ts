@@ -1,8 +1,26 @@
-const container = document.getElementById("root");
-const ajax = new XMLHttpRequest();
+// Type alias
+type Store = {
+  currentPage: number;
+  feeds: NewFeed[];
+};
+
+type NewFeed = {
+  id: number;
+  url: string;
+  user: string;
+  time_ago: string;
+  points: string;
+  comments_count: number;
+  title: string;
+  read?: boolean;
+  domain: string;
+};
+
+const container: HTMLElement | null = document.getElementById("root");
+const ajax: XMLHttpRequest = new XMLHttpRequest();
 const NEWS_URL = "https://api.hnpwa.com/v0/news/1.json";
 const CONTENT_URL = "https://api.hnpwa.com/v0/item/@id.json";
-const store = {
+const store: Store = {
   currentPage: 1,
   feeds: [],
 };
@@ -22,8 +40,17 @@ function makeFeeds(feeds) {
   return feeds;
 }
 
+// Update view
+function updateView(html) {
+  if (container) {
+    container.innerHTML = html;
+  } else {
+    console.log("There's no container...");
+  }
+}
+
 function newsFeed() {
-  let newsFeed = store.feeds;
+  let newsFeed: NewFeed[] = store.feeds;
   const newsList = [];
   let template = `
     <div class="bg-gray-600 min-h-screen">
@@ -97,7 +124,7 @@ function newsFeed() {
       : store.currentPage
   );
 
-  container.innerHTML = template;
+  updateView(template);
 }
 
 function newsDetail() {
@@ -161,9 +188,8 @@ function newsDetail() {
     return commentString.join("");
   }
 
-  container.innerHTML = template.replace(
-    "{{__comments__}}",
-    makeComment(newsContent.comments)
+  updateView(
+    template.replace("{{__commit__}}", makeComment(newsContent.comments))
   );
 }
 
