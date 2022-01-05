@@ -118,7 +118,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"app.ts":[function(require,module,exports) {
-"use strict"; // Typing
+"use strict";
 
 var container = document.getElementById("root");
 var ajax = new XMLHttpRequest();
@@ -127,7 +127,7 @@ var CONTENT_URL = "https://api.hnpwa.com/v0/item/@id.json";
 var store = {
   currentPage: 1,
   feeds: []
-}; // Generic
+};
 
 function getData(url) {
   ajax.open("GET", url, false);
@@ -141,14 +141,13 @@ function makeFeeds(feeds) {
   }
 
   return feeds;
-} // Update view
-
+}
 
 function updateView(html) {
   if (container) {
     container.innerHTML = html;
   } else {
-    console.error("There's no container...");
+    console.error("최상위 컨테이너가 없어 UI를 진행하지 못합니다.");
   }
 }
 
@@ -162,12 +161,12 @@ function newsFeed() {
   }
 
   for (var i = (store.currentPage - 1) * 10; i < store.currentPage * 10; i++) {
-    newsList.push("\n      <div class=\"p-6 ".concat(newsFeed[i].read ? "bg-red-500" : "bg-white", " mt-6 rounded-lg shadow-md transition-colors duration-500 hover:bg-green-100\">\n        <div class=\"flex\">\n          <div class=\"flex-auto\">\n            <a href=\"#/show/").concat(newsFeed[i].id, "\">").concat(newsFeed[i].title, "</a>\n            (<a href=\"").concat("http://" + newsFeed[i].domain, "\" target='_blank' class=\"hover:text-blue-600\">").concat(newsFeed[i].domain, "</a>)  \n          </div>\n          <div class=\"text-center text-sm\">\n            <div class=\"w-10 text-white bg-green-300 rounded-lg px-0 py-2\">").concat(newsFeed[i].comments_count, "</div>\n          </div>\n        </div>\n        <div class=\"flex mt-3\">\n          <div class=\"grid grid-cols-3 text-sm text-gray-500\">\n            <div><i class=\"fas fa-user mr-1\"></i>").concat(newsFeed[i].user, "</div>\n            <div><i class=\"fas fa-heart mr-1\"></i>").concat(newsFeed[i].points, "</div>\n            <div><i class=\"far fa-clock mr-1\"></i>").concat(newsFeed[i].time_ago, "</div>\n          </div>  \n        </div>\n      </div>    \n    "));
+    newsList.push("\n      <div class=\"p-6 ".concat(newsFeed[i].read ? "bg-red-500" : "bg-white", " mt-6 rounded-lg shadow-md transition-colors duration-500 hover:bg-green-100\">\n        <div class=\"flex\">\n          <div class=\"flex-auto\">\n            <a href=\"#/show/").concat(newsFeed[i].id, "\">").concat(newsFeed[i].title, "</a>  \n          </div>\n          <div class=\"text-center text-sm\">\n            <div class=\"w-10 text-white bg-green-300 rounded-lg px-0 py-2\">").concat(newsFeed[i].comments_count, "</div>\n          </div>\n        </div>\n        <div class=\"flex mt-3\">\n          <div class=\"grid grid-cols-3 text-sm text-gray-500\">\n            <div><i class=\"fas fa-user mr-1\"></i>").concat(newsFeed[i].user, "</div>\n            <div><i class=\"fas fa-heart mr-1\"></i>").concat(newsFeed[i].points, "</div>\n            <div><i class=\"far fa-clock mr-1\"></i>").concat(newsFeed[i].time_ago, "</div>\n          </div>  \n        </div>\n      </div>    \n    "));
   }
 
   template = template.replace("{{__news_feed__}}", newsList.join(""));
   template = template.replace("{{__prev_page__}}", String(store.currentPage > 1 ? store.currentPage - 1 : 1));
-  template = template.replace("{{__next_page__}}", String(newsFeed.length / 10 > store.currentPage ? store.currentPage + 1 : store.currentPage));
+  template = template.replace("{{__next_page__}}", String(store.currentPage + 1));
   updateView(template);
 }
 
@@ -191,7 +190,7 @@ function makeComment(comments) {
 
   for (var i = 0; i < comments.length; i++) {
     var comment = comments[i];
-    commentString.push("\n        <div style=\"padding-left: ".concat(comment.level * 40, "px;\" class=\"mt-4\">\n          <div class=\"text-gray-400\">\n            <i class=\"fa fa-sort-up mr-2\"></i>\n            <strong>").concat(comment.user, "</strong> ").concat(comment.time_ago, "\n          </div>\n          <p class=\"text-gray-700\">").concat(comment.content, "</p>\n        </div>      \n      "));
+    commentString.push("\n      <div style=\"padding-left: ".concat(comment.level * 40, "px;\" class=\"mt-4\">\n        <div class=\"text-gray-400\">\n          <i class=\"fa fa-sort-up mr-2\"></i>\n          <strong>").concat(comment.user, "</strong> ").concat(comment.time_ago, "\n        </div>\n        <p class=\"text-gray-700\">").concat(comment.content, "</p>\n      </div>      \n    "));
 
     if (comment.comments.length > 0) {
       commentString.push(makeComment(comment.comments));

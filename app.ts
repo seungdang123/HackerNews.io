@@ -1,10 +1,8 @@
-// Type alias
 type Store = {
   currentPage: number;
   feeds: NewsFeed[];
 };
 
-// Intersection
 type News = {
   id: number;
   time_ago: string;
@@ -15,10 +13,9 @@ type News = {
 };
 
 type NewsFeed = News & {
-  points: string;
   comments_count: number;
+  points: number;
   read?: boolean;
-  domain: string;
 };
 
 type NewsDetail = News & {
@@ -30,7 +27,6 @@ type NewsComment = News & {
   level: number;
 };
 
-// Typing
 const container: HTMLElement | null = document.getElementById("root");
 const ajax: XMLHttpRequest = new XMLHttpRequest();
 const NEWS_URL = "https://api.hnpwa.com/v0/news/1.json";
@@ -40,7 +36,6 @@ const store: Store = {
   feeds: [],
 };
 
-// Generic
 function getData<AjaxResponse>(url: string): AjaxResponse {
   ajax.open("GET", url, false);
   ajax.send();
@@ -56,12 +51,11 @@ function makeFeeds(feeds: NewsFeed[]): NewsFeed[] {
   return feeds;
 }
 
-// Update view
 function updateView(html: string): void {
   if (container) {
     container.innerHTML = html;
   } else {
-    console.error("There's no container...");
+    console.error("최상위 컨테이너가 없어 UI를 진행하지 못합니다.");
   }
 }
 
@@ -104,12 +98,7 @@ function newsFeed(): void {
       } mt-6 rounded-lg shadow-md transition-colors duration-500 hover:bg-green-100">
         <div class="flex">
           <div class="flex-auto">
-            <a href="#/show/${newsFeed[i].id}">${newsFeed[i].title}</a>
-            (<a href="${
-              "http://" + newsFeed[i].domain
-            }" target='_blank' class="hover:text-blue-600">${
-      newsFeed[i].domain
-    }</a>)  
+            <a href="#/show/${newsFeed[i].id}">${newsFeed[i].title}</a>  
           </div>
           <div class="text-center text-sm">
             <div class="w-10 text-white bg-green-300 rounded-lg px-0 py-2">${
@@ -135,12 +124,9 @@ function newsFeed(): void {
   );
   template = template.replace(
     "{{__next_page__}}",
-    String(
-      newsFeed.length / 10 > store.currentPage
-        ? store.currentPage + 1
-        : store.currentPage
-    )
+    String(store.currentPage + 1)
   );
+
   updateView(template);
 }
 
@@ -193,15 +179,16 @@ function makeComment(comments: NewsComment[]): string {
 
   for (let i = 0; i < comments.length; i++) {
     const comment: NewsComment = comments[i];
+
     commentString.push(`
-        <div style="padding-left: ${comment.level * 40}px;" class="mt-4">
-          <div class="text-gray-400">
-            <i class="fa fa-sort-up mr-2"></i>
-            <strong>${comment.user}</strong> ${comment.time_ago}
-          </div>
-          <p class="text-gray-700">${comment.content}</p>
-        </div>      
-      `);
+      <div style="padding-left: ${comment.level * 40}px;" class="mt-4">
+        <div class="text-gray-400">
+          <i class="fa fa-sort-up mr-2"></i>
+          <strong>${comment.user}</strong> ${comment.time_ago}
+        </div>
+        <p class="text-gray-700">${comment.content}</p>
+      </div>      
+    `);
 
     if (comment.comments.length > 0) {
       commentString.push(makeComment(comment.comments));
