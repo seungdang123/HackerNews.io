@@ -1,7 +1,15 @@
-type Store = {
+// Type alias
+// type Store = {
+//   currentPage: number;
+//   feeds: NewsFeed[];
+// };
+
+// Interface
+// Interface can`t express 'Union type'
+interface Store {
   currentPage: number;
   feeds: NewsFeed[];
-};
+}
 
 type News = {
   id: number;
@@ -12,11 +20,20 @@ type News = {
   content: string;
 };
 
-type NewsFeed = News & {
-  comments_count: number;
-  points: number;
+// Type alias can use &
+// type NewsFeed = News & {
+//   comments_count: number;
+//   points: number;
+//   read?: boolean;
+// };
+
+// Interface use extends instead of &
+// readonly : Set the value to not be changed
+interface NewsFeed extends News {
+  readonly comments_count: number;
+  readonly points: number;
   read?: boolean;
-};
+}
 
 type NewsDetail = News & {
   comments: NewsComment[];
